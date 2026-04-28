@@ -3,3 +3,4 @@ uvicorn
 openpyxl
 opencv-python-headless
 numpy
+python-multipart
