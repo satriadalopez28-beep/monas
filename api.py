@@ -109,8 +109,7 @@ async def predict_photo(
     lebar = depan["lebar_cm"]
     tebal = samping["tebal_cm"]
 
-    # validasi hasil deteksi seperti Kivy lama
-    if tinggi < 60 or tinggi > 120:
+    if tinggi < 40 or tinggi > 150:
         return {
             "error": "Deteksi foto tidak valid",
             "message": f"Tinggi terdeteksi tidak masuk akal: {tinggi} cm"
