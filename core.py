@@ -39,8 +39,10 @@ def process_image(input_path, save_output=True, output_folder="output_hsv"):
     # =====================================
     # STEP 1: RESIZE
     # =====================================
+    TARGET_WIDTH = 480
     height, width = img.shape[:2]
-    img = cv2.resize(img, (int(width * SCALE), int(height * SCALE)))
+    new_height = int(height * TARGET_WIDTH / width)
+    img = cv2.resize(img, (TARGET_WIDTH, new_height))
 
     # =====================================
     # STEP 2: CROP
@@ -228,8 +230,10 @@ def process_image_side(input_path, save_output=True, output_folder="output_side"
     # =====================================
     # STEP 1: RESIZE
     # =====================================
+    TARGET_WIDTH = 480
     height, width = img.shape[:2]
-    img = cv2.resize(img, (int(width * SCALE), int(height * SCALE)))
+    new_height = int(height * TARGET_WIDTH / width)
+    img = cv2.resize(img, (TARGET_WIDTH, new_height))
 
     # =====================================
     # STEP 2: CROP
