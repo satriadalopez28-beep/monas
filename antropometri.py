@@ -55,20 +55,29 @@ class AntropometriSK:
         else:
             return "Tinggi"
         
-    def classify_bbtb(self, jenis_kelamin, tinggi_cm, berat_kg):
-        sheet_name = "BBTB L" if jenis_kelamin == "L" else "BBTB P"
+    def classify_bbtb(self, jenis_kelamin, umur_bulan, tinggi_cm, berat_kg):
+        if umur_bulan <= 24:
+            sheet_name = "BBPB L" if jenis_kelamin == "L" else "BBPB P"
+        else:
+            sheet_name = "BBTB L" if jenis_kelamin == "L" else "BBTB P"
+
         ws = self.wb[sheet_name]
 
-        row = self._find_best_row_by_first_col(ws, tinggi_cm, start_row=5)
+        row = self._find_best_row_by_first_col(
+            ws,
+            tinggi_cm,
+            start_row=5
+        )
+
         if row is None:
-            return "Data BBTB tidak ditemukan"
+            return "Data BB/PB atau BB/TB tidak ditemukan"
 
         minus_3sd = self._to_float(ws.cell(row, 2).value)
         minus_2sd = self._to_float(ws.cell(row, 3).value)
         plus_2sd = self._to_float(ws.cell(row, 7).value)
 
         if None in (minus_3sd, minus_2sd, plus_2sd):
-            return "Data BBTB tidak lengkap"
+            return "Data BB/PB atau BB/TB tidak lengkap"
 
         if berat_kg < minus_3sd:
             return "Sangat Kurus"
