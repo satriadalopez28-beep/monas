@@ -58,7 +58,7 @@ def predict_manual(
     if umur_bulan is None:
         return {"error": "Format tanggal harus DD-MM-YYYY"}
 
-    status_bbtb = sk.classify_bbtb(jenis_kelamin, tinggi, berat)
+    status_bbtb = sk.classify_bbtb(jenis_kelamin, umur_bulan, tinggi, berat)
     status_tbu = sk.classify_tbu(jenis_kelamin, umur_bulan, tinggi)
     kesimpulan = gabung_status(status_bbtb, status_tbu)
 
@@ -124,7 +124,7 @@ async def predict_photo(
             "message": f"Berat hasil estimasi tidak masuk akal: {berat} kg"
         }
 
-    status_bbtb = sk.classify_bbtb(jenis_kelamin, tinggi, berat)
+    status_bbtb = sk.classify_bbtb(jenis_kelamin, umur_bulan, tinggi, berat)
     status_tbu = sk.classify_tbu(jenis_kelamin, umur_bulan, tinggi)
     kesimpulan = gabung_status(status_bbtb, status_tbu)
 
