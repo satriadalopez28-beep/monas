@@ -130,6 +130,41 @@ def process_image(input_path, save_output=True, output_folder="output_hsv"):
     tinggi_cm = tinggi_pixel * RASIO_CM_PER_PIXEL
     lebar_cm = lebar_pixel * RASIO_CM_PER_PIXEL
 
+    result = crop_img.copy()
+    img_h, img_w = result.shape[:2]
+
+    # Bounding box tubuh (kotak hijau)
+    cv2.rectangle(result, (left_x, top_y), (right_x, bottom_y), (0, 255, 0), 2)
+
+    margin = 25
+
+    # --- Garis TINGGI (vertikal merah, kiri box) ---
+    line_x = max(left_x - margin, 5)
+    cv2.line(result, (line_x, top_y), (line_x, bottom_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x - 6, top_y), (line_x + 6, top_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x - 6, bottom_y), (line_x + 6, bottom_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x, top_y), (left_x, top_y), (0, 0, 255), 1)
+    cv2.line(result, (line_x, bottom_y), (left_x, bottom_y), (0, 0, 255), 1)
+
+    # --- Garis LEBAR TUBUH (horizontal biru, melintasi badan) ---
+    body_width_y = top_y + int((bottom_y - top_y) * 0.35)
+    cv2.line(result, (left_x, body_width_y), (right_x, body_width_y), (255, 0, 0), 2)
+    cv2.line(result, (left_x, body_width_y - 6), (left_x, body_width_y + 6), (255, 0, 0), 2)
+    cv2.line(result, (right_x, body_width_y - 6), (right_x, body_width_y + 6), (255, 0, 0), 2)
+
+    # --- Label ---
+    label_w, label_h = 150, 55
+    label_x = img_w - label_w - 5
+    label_y = 5
+    overlay = result.copy()
+    cv2.rectangle(overlay, (label_x, label_y), (label_x + label_w, label_y + label_h), (0, 0, 0), -1)
+    result = cv2.addWeighted(overlay, 0.55, result, 0.45, 0)
+
+    cv2.putText(result, f"Tinggi: {tinggi_cm:.1f} cm", (label_x + 8, label_y + 22),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
+    cv2.putText(result, f"Lebar : {lebar_cm:.1f} cm", (label_x + 8, label_y + 45),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA) 
+
     if save_output:
         cv2.imwrite(os.path.join(output_folder, "1_resize_crop.jpg"), crop_img)
         cv2.imwrite(os.path.join(output_folder, "2_blur.jpg"), blur)
@@ -215,7 +250,7 @@ def process_image_side(input_path, save_output=True, output_folder="output_side"
     largest_final = max(contours_final, key=cv2.contourArea)
     cv2.drawContours(result, [largest_final], -1, (0, 255, 0), 2)
 
-    # AUTO-CROP
+    # AUTO-CROP 
     x, y, w_box, h_box = cv2.boundingRect(largest_final)
     x1 = max(0, x - 10)
     y1 = max(0, y - 10)
@@ -238,6 +273,41 @@ def process_image_side(input_path, save_output=True, output_folder="output_side"
 
     result = focused_result
     clean_mask = focused_mask
+
+    result = focused_result.copy()
+    img_h, img_w = result.shape[:2]
+
+    # Bounding box tubuh (kotak hijau)
+    cv2.rectangle(result, (left_x, top_y), (right_x, bottom_y), (0, 255, 0), 2)
+
+    margin = 25
+
+    # --- Garis TINGGI (vertikal merah, kiri box) ---
+    line_x = max(left_x - margin, 5)
+    cv2.line(result, (line_x, top_y), (line_x, bottom_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x - 6, top_y), (line_x + 6, top_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x - 6, bottom_y), (line_x + 6, bottom_y), (0, 0, 255), 2)
+    cv2.line(result, (line_x, top_y), (left_x, top_y), (0, 0, 255), 1)
+    cv2.line(result, (line_x, bottom_y), (left_x, bottom_y), (0, 0, 255), 1)
+
+    # --- Garis TEBAL TUBUH (horizontal biru, melintasi badan) ---
+    body_width_y = top_y + int((bottom_y - top_y) * 0.35)
+    cv2.line(result, (left_x, body_width_y), (right_x, body_width_y), (255, 0, 0), 2)
+    cv2.line(result, (left_x, body_width_y - 6), (left_x, body_width_y + 6), (255, 0, 0), 2)
+    cv2.line(result, (right_x, body_width_y - 6), (right_x, body_width_y + 6), (255, 0, 0), 2)
+
+    # --- Label ---
+    label_w, label_h = 150, 55
+    label_x = img_w - label_w - 5
+    label_y = 5
+    overlay = result.copy()
+    cv2.rectangle(overlay, (label_x, label_y), (label_x + label_w, label_y + label_h), (0, 0, 0), -1)
+    result = cv2.addWeighted(overlay, 0.55, result, 0.45, 0)
+
+    cv2.putText(result, f"Tinggi: {tinggi_cm:.1f} cm", (label_x + 8, label_y + 22),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
+    cv2.putText(result, f"Tebal : {tebal_cm:.1f} cm", (label_x + 8, label_y + 45),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA)
 
     if save_output:
         cv2.imwrite(os.path.join(output_folder, "1_resize_crop.jpg"), crop_img)
