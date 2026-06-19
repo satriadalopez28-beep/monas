@@ -13,7 +13,7 @@ BOTTOM_CROP = 0.97
 LEFT_CROP = 0.05
 RIGHT_CROP = 0.95
 
-RASIO_CM_PER_PIXEL = 0.218
+RASIO_CM_PER_PIXEL = 0.22
 
 LOWER_GREEN = np.array([35, 60, 60])
 UPPER_GREEN = np.array([85, 255, 255])
@@ -333,6 +333,5 @@ def process_image_side(input_path, save_output=True, output_folder="output_side"
 
 
 def estimate_weight(tinggi_cm, lebar_cm, tebal_cm):
-    berat = 0.244 * tinggi_cm - 8.667
+    berat = 0.23 * tinggi_cm - 8.5
     return berat
-        
